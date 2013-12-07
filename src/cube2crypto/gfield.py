@@ -1,5 +1,5 @@
-from bit_test import bit_test
-import ecc_params as _ecc_params
+from cube2crypto.bit_test import bit_test
+from cube2crypto import ecc_params as _ecc_params
 
 def _GField__big_m_pow(x, exp, carry, ecc_params):
     if carry is None:
@@ -50,7 +50,7 @@ class GField(object):
         if ov < 8:
             nv = (self.value ** ov) % self.ecc_params.P
         else:
-            nv = __big_m_pow(self.value, ov, None, self.ecc_params)
+            nv = _GField__big_m_pow(self.value, ov, None, self.ecc_params)
         return GField(nv, self.ecc_params)
         
     def div(self, other):

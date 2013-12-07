@@ -1,8 +1,6 @@
-"""
-This file is from the github repository found at the following location;
-https://github.com/browning/tiger-hash-python
-
-Below is the copyright notice included therein;
+'''
+This is a slightly modified version of https://github.com/browning/tiger-hash-python/blob/master/tiger.py
+This file is include under the terms of the MIT license as seen below;
 
 Copyright (c) 2011 Brian Browning, David Bern
 
@@ -18,11 +16,11 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
 COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-"""
+'''
 
 import array
 import struct
-from sboxes import t1, t2, t3, t4
+from cube2crypto.sboxes import t1, t2, t3, t4
 
 def tiger_round(a,b,c,x,mul):
     c ^= x
@@ -51,7 +49,7 @@ def tiger_pass(a,b,c,mul, mystr):
     values = { "b": values["a"], "c":values["b"], "a": values["c"]}
     return values
 
-def tiger_compress(str, res):
+def tiger_compress(string, res):
     #setup
     a = res[0]
     b = res[1]
@@ -60,7 +58,7 @@ def tiger_compress(str, res):
     x = []
 
     for j in range(0,8):
-        x.append(struct.unpack('Q', str[j*8:j*8+8])[0])
+        x.append(struct.unpack('Q', string[j*8:j*8+8])[0])
 
     # compress
     aa = a
@@ -114,16 +112,15 @@ def tiger_compress(str, res):
     res[1] = b
     res[2] = c
 
-def hash(str):
+def tiger_hash(string):
     i = 0
 
     res = [0x0123456789ABCDEF, 0xFEDCBA9876543210, 0xF096A5B4C3B2E187]
-    offset = 0
-    length = len(str)
+    length = len(string)
     while i < length-63:
-        tiger_compress( str[i:i+64], res )
+        tiger_compress( string[i:i+64], res )
         i += 64
-    temp = array.array('c', str[i:])
+    temp = array.array('c', string[i:])
     j = len(temp)
     temp.append(chr(0x01))
     j += 1
@@ -150,4 +147,5 @@ def hash(str):
     temp.fromstring(struct.pack('Q', length<<3))
     tiger_compress(temp, res)
     
-    return "%016X%016X%016X" % (res[0], res[1], res[2])
+    return ''.join(map(lambda p: ("%016x" % p)[::-1], res))
+

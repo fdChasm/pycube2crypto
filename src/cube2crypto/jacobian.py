@@ -45,7 +45,7 @@ class Jacobian(object):
         ybit, s = s[0] == '-', s[1:]
         x = GField(int(s, 16), ecc_params)
         
-        tmp = x.mul2().add(x)
+        _ = x.mul2().add(x)
         y2 = x.pow(3).sub(x.mul(3)).add(ecc_params.B)
         y = y2.legendre_sqrt()
         if y is None:
@@ -115,7 +115,7 @@ class Jacobian(object):
         elif int(self.z) == 0:
             return q
         
-        a, b, c, d, e, f = 0,0,0,0,0,0
+        _, _, c, d, e, f = 0,0,0,0,0,0
         
         a = self.z.sqr()
         b = q.y.mul(a).mul(self.z)
